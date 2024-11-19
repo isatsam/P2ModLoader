@@ -19,14 +19,12 @@ public partial class MainForm : Form {
     }
     
     private static async void MainForm_Load(object sender, EventArgs e) {
-        if (SettingsHolder.CheckForUpdates)
+        if (SettingsHolder.CheckForUpdatesOnStartup)
             await AutoUpdater.CheckForUpdatesAsync();
     }
 
     private void InitializeTabs() {
-        var versionInfo = Assembly.GetExecutingAssembly().GetName().Version!;
-        var version = $"{versionInfo.Major}.{versionInfo.Minor}.{versionInfo.Build}";
-        Text = $"P2ModLoader {version}";
+        Text = $"P2ModLoader {AutoUpdater.CurrentVersion}";
         Size = new Size(800, 800);
         MinimumSize = new Size(600, 600); 
 

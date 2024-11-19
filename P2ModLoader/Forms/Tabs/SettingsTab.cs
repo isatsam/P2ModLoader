@@ -5,7 +5,7 @@ namespace P2ModLoader.Forms.Tabs;
 
 public class SettingsTab : BaseTab {
     private TextBox? _pathTextBox;
-    private Button? _browseButton, _locateButton;
+    private Button? _browseButton, _locateButton, _checkForUpdatesButton;
     private CheckBox? _allowConflictsCheckBox, _checkForUpdatesCheckBox;
     private MainForm? _mainForm;
 
@@ -53,13 +53,20 @@ public class SettingsTab : BaseTab {
             SettingsHolder.AllowStartupWithConflicts = _allowConflictsCheckBox!.Checked;
         };
 
+        _checkForUpdatesButton = new Button();
+        _checkForUpdatesButton.Text = "Check for updates";
+        _checkForUpdatesButton.Location = new Point(20, 125);
+        _checkForUpdatesButton.Width = 190;
+        _checkForUpdatesButton.Height = 32;
+        _checkForUpdatesButton.Click += (_, _) => _ = AutoUpdater.CheckForUpdatesAsync(); 
+        
         _checkForUpdatesCheckBox = new CheckBox();
         _checkForUpdatesCheckBox.Text = "Check for updates on startup";
-        _checkForUpdatesCheckBox.Location = new Point(20, 125);
+        _checkForUpdatesCheckBox.Location = new Point(20, 165);
         _checkForUpdatesCheckBox.AutoSize = true;
-        _checkForUpdatesCheckBox.Checked = SettingsHolder.CheckForUpdates;
+        _checkForUpdatesCheckBox.Checked = SettingsHolder.CheckForUpdatesOnStartup;
         _checkForUpdatesCheckBox.CheckedChanged += (_, _) => {
-            SettingsHolder.CheckForUpdates = _checkForUpdatesCheckBox!.Checked;
+            SettingsHolder.CheckForUpdatesOnStartup = _checkForUpdatesCheckBox!.Checked;
         };
 
         Tab.Controls.AddRange([
@@ -68,6 +75,7 @@ public class SettingsTab : BaseTab {
             _browseButton,
             _locateButton,
             _allowConflictsCheckBox,
+            _checkForUpdatesButton,
             _checkForUpdatesCheckBox
         ]);
     }

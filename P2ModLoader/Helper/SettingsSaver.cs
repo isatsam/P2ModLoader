@@ -26,7 +26,7 @@ public static class SettingsSaver {
                 SettingsHolder.InstallPath = settings.InstallPath == "null" ? null : settings.InstallPath;
                 SettingsHolder.AllowStartupWithConflicts = settings.AllowStartupWithConflicts;
                 SettingsHolder.IsPatched = settings.IsPatched;
-                SettingsHolder.CheckForUpdates = settings.CheckForUpdates;
+                SettingsHolder.CheckForUpdatesOnStartup = settings.CheckForUpdates;
                 SettingsHolder.LastKnownModState = settings.ModState;
             } catch (Exception ex) {
                 ErrorHandler.Handle("Failed to load settings", ex);
@@ -49,7 +49,7 @@ public static class SettingsSaver {
                 InstallPath = SettingsHolder.InstallPath == null ? "null" : SettingsHolder.InstallPath,
                 AllowStartupWithConflicts = SettingsHolder.AllowStartupWithConflicts,
                 IsPatched = SettingsHolder.IsPatched,
-                CheckForUpdates = SettingsHolder.CheckForUpdates,
+                CheckForUpdates = SettingsHolder.CheckForUpdatesOnStartup,
                 ModState = SettingsHolder.LastKnownModState.ToList()
             };
             
