@@ -107,9 +107,9 @@ public static class AutoUpdater {
         var assetUrl = release.Assets[0].BrowserDownloadUrl;
         var zipPath = Path.Combine(UpdateDirectory, "update.zip");
 
-        await using var stream = await Client.GetStreamAsync(assetUrl);
-        await using var fileStream = File.Create(zipPath);
-        await stream.CopyToAsync(fileStream);
+        await using (var stream = await Client.GetStreamAsync(assetUrl))
+            await using (var fileStream = File.Create(zipPath))
+                await stream.CopyToAsync(fileStream);
 
         var extractPath = Path.Combine(UpdateDirectory, "extracted");
         if (Directory.Exists(extractPath))
