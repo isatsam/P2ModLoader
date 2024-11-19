@@ -5,12 +5,14 @@ namespace P2ModLoader.Helper;
 public static class SettingsSaver {
     private const string SETTINGS_DIRECTORY = "Settings";
     private static readonly string SettingsPath = Path.Combine(SETTINGS_DIRECTORY, "settings.json");
+    private static readonly JsonSerializerOptions Options = new JsonSerializerOptions { WriteIndented = true };
     private static bool _subscribed = false;
     
     private class SavedSettings {
         public string? InstallPath { get; init; }
         public bool AllowStartupWithConflicts { get; init; }
         public bool IsPatched { get; init; }
+        public bool CheckForUpdates {get; init; }
         public List<SavedModState> ModState { get; init; } = [];
     }
     
@@ -24,6 +26,7 @@ public static class SettingsSaver {
                 SettingsHolder.InstallPath = settings.InstallPath == "null" ? null : settings.InstallPath;
                 SettingsHolder.AllowStartupWithConflicts = settings.AllowStartupWithConflicts;
                 SettingsHolder.IsPatched = settings.IsPatched;
+                SettingsHolder.CheckForUpdates = settings.CheckForUpdates;
                 SettingsHolder.LastKnownModState = settings.ModState;
             } catch (Exception ex) {
                 ErrorHandler.Handle("Failed to load settings", ex);
@@ -46,17 +49,13 @@ public static class SettingsSaver {
                 InstallPath = SettingsHolder.InstallPath == null ? "null" : SettingsHolder.InstallPath,
                 AllowStartupWithConflicts = SettingsHolder.AllowStartupWithConflicts,
                 IsPatched = SettingsHolder.IsPatched,
+                CheckForUpdates = SettingsHolder.CheckForUpdates,
                 ModState = SettingsHolder.LastKnownModState.ToList()
             };
             
-            var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { 
-                WriteIndented = true 
-            });
-            
-            File.WriteAllText(SettingsPath, json);
+            File.WriteAllText(SettingsPath, JsonSerializer.Serialize(settings, Options));
         } catch (Exception ex) {
-            MessageBox.Show($"Failed to save settings: {ex.Message}", "Error",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            ErrorHandler.Handle("Failed to load settings", ex);
         }
     }
 }

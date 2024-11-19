@@ -6,7 +6,7 @@ namespace P2ModLoader.Forms.Tabs;
 public class SettingsTab : BaseTab {
     private TextBox? _pathTextBox;
     private Button? _browseButton, _locateButton;
-    private CheckBox? _allowConflictsCheckBox;
+    private CheckBox? _allowConflictsCheckBox, _checkForUpdatesCheckBox;
     private MainForm? _mainForm;
 
     public SettingsTab(TabPage page, MainForm mainForm) : base(page) {
@@ -49,14 +49,26 @@ public class SettingsTab : BaseTab {
         _allowConflictsCheckBox.Location = new Point(20, 85);
         _allowConflictsCheckBox.AutoSize = true;
         _allowConflictsCheckBox.Checked = SettingsHolder.AllowStartupWithConflicts;
-        _allowConflictsCheckBox.CheckedChanged += AllowConflictsCheckBox_CheckedChanged;
+        _allowConflictsCheckBox.CheckedChanged += (_, _) => {
+            SettingsHolder.AllowStartupWithConflicts = _allowConflictsCheckBox!.Checked;
+        };
+
+        _checkForUpdatesCheckBox = new CheckBox();
+        _checkForUpdatesCheckBox.Text = "Check for updates on startup";
+        _checkForUpdatesCheckBox.Location = new Point(20, 125);
+        _checkForUpdatesCheckBox.AutoSize = true;
+        _checkForUpdatesCheckBox.Checked = SettingsHolder.CheckForUpdates;
+        _checkForUpdatesCheckBox.CheckedChanged += (_, _) => {
+            SettingsHolder.CheckForUpdates = _checkForUpdatesCheckBox!.Checked;
+        };
 
         Tab.Controls.AddRange([
             pathLabel,
             _pathTextBox,
             _browseButton,
             _locateButton,
-            _allowConflictsCheckBox
+            _allowConflictsCheckBox,
+            _checkForUpdatesCheckBox
         ]);
     }
 
@@ -72,9 +84,5 @@ public class SettingsTab : BaseTab {
         if (string.IsNullOrEmpty(installPath)) return;
         SettingsHolder.InstallPath = installPath;
         _mainForm.UpdateControls();
-    }
-    
-    private void AllowConflictsCheckBox_CheckedChanged(object? sender, EventArgs e) {
-        SettingsHolder.AllowStartupWithConflicts = _allowConflictsCheckBox!.Checked;
     }
 }

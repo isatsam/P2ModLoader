@@ -1,3 +1,4 @@
+using System.Reflection;
 using P2ModLoader.Forms.Tabs;
 using P2ModLoader.Helper;
 using P2ModLoader.ModList;
@@ -12,13 +13,20 @@ public partial class MainForm : Form {
     private Label? _patchStatusLabel;
     
     public MainForm() {
-        SettingsSaver.LoadSettings();
         InitializeComponent();
         InitializeTabs();
+        this.Load += MainForm_Load!;
+    }
+    
+    private static async void MainForm_Load(object sender, EventArgs e) {
+        if (SettingsHolder.CheckForUpdates)
+            await AutoUpdater.CheckForUpdatesAsync();
     }
 
     private void InitializeTabs() {
-        Text = "Pathologic 2 Mod Loader";
+        var versionInfo = Assembly.GetExecutingAssembly().GetName().Version!;
+        var version = $"{versionInfo.Major}.{versionInfo.Minor}.{versionInfo.Build}";
+        Text = $"P2ModLoader {version}";
         Size = new Size(800, 800);
         MinimumSize = new Size(600, 600); 
 

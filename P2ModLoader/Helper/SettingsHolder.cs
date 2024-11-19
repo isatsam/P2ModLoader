@@ -6,9 +6,14 @@ public static class SettingsHolder {
 	private static string? _installPath;
 	private static bool _allowStartupWithConflicts;
 	private static bool _isPatched = true;
+	private static bool _checkForUpdates = false;
 	private static List<SavedModState> _lastKnownModState = new();
 
-	public static event Action? InstallPathChanged, StartupWithConflictsChanged, PatchStatusChanged, ModStateChanged;
+	public static event Action? InstallPathChanged,
+		StartupWithConflictsChanged,
+		PatchStatusChanged,
+		ModStateChanged,
+		CheckForUpdatesChanged;
 
 	public static string? InstallPath {
 		get => _installPath;
@@ -36,6 +41,15 @@ public static class SettingsHolder {
 		set {
 			if (_isPatched == value) return;
 			_isPatched = value;
+			PatchStatusChanged?.Invoke();
+		}
+	}
+
+	public static bool CheckForUpdates {
+		get => _checkForUpdates;
+		set {
+			if (_checkForUpdates == value) return;
+			_checkForUpdates = value;
 			PatchStatusChanged?.Invoke();
 		}
 	}
