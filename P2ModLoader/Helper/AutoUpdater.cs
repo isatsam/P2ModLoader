@@ -154,7 +154,7 @@ public static class AutoUpdater {
                       del /q "{UpdateDirectory}\update.zip"
 
                       rem Start the updated application
-                      start "" "{currentExe}"
+                      start /B "" "{currentExe}"
 
                       rem Delete this script
                       del "%~f0"
