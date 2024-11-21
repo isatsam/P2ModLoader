@@ -18,10 +18,13 @@ public static class SettingsHolder {
 	public static string? InstallPath {
 		get => _installPath;
 		set {
-			var isValid = newPath != null && File.Exists(Path.Combine(newPath, "Pathologic.exe"));
+			var isValid = value != null && File.Exists(Path.Combine(value, "Pathologic.exe"));
         
+			if (_installPath == value) return;
         
+			_installPath = isValid ? value : null;
 			InstallPathChanged?.Invoke();
+			Logger.LogInfo($"Setting {nameof(InstallPath)} changed to: {value}");
 		}
 	}
 
@@ -30,6 +33,7 @@ public static class SettingsHolder {
 		set {
 			_allowStartupWithConflicts = value;
 			StartupWithConflictsChanged?.Invoke();
+			Logger.LogInfo($"Setting {nameof(AllowStartupWithConflicts)} changed to: {value}");
 		}
 	}
 
@@ -39,6 +43,7 @@ public static class SettingsHolder {
 			if (_isPatched == value) return;
 			_isPatched = value;
 			PatchStatusChanged?.Invoke();
+			Logger.LogInfo($"Setting {nameof(IsPatched)} changed to: {value}");
 		}
 	}
 
@@ -48,6 +53,7 @@ public static class SettingsHolder {
 			if (_checkForUpdatesOnStartup == value) return;
 			_checkForUpdatesOnStartup = value;
 			CheckForUpdatesOnStartupChanged?.Invoke();
+			Logger.LogInfo($"Setting {nameof(CheckForUpdatesOnStartup)} changed to: {value}");
 		}
 	}
 
@@ -56,6 +62,7 @@ public static class SettingsHolder {
 		set {
 			_lastKnownModState = value.ToList();
 			ModStateChanged?.Invoke();
+			Logger.LogInfo($"Setting {nameof(LastKnownModState)} changed to: {value}");
 		}
 	}
 

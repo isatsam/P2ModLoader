@@ -30,6 +30,7 @@ public class SavesTab : BaseTab {
 	}
 
 	protected override void InitializeComponents() {
+		Logger.LogInfo("Appdata found, initializing saves tree view.");
 		_savesTreeView = new TreeView { Dock = DockStyle.Fill };
 		_profileManager = new ProfileManager(_savesDirectory!, _profilesPath!);
 		var treeViewBuilder = new SavesTreeViewBuilder(_savesDirectory!, _profileManager);
@@ -37,9 +38,11 @@ public class SavesTab : BaseTab {
 
 		Tab.Controls.Add(_savesTreeView);
 		_treeViewManager.RefreshTreeView();
+		Logger.LogInfo("Saves tree view initialized.");
 	}
 
 	private void ShowErrorMessage() {
+		Logger.LogInfo("Appdata not found, cannot view save files.");
 		_messageLabel = new Label {
 			Text = "AppData for Pathologic 2 not found. " +
 			       "Ensure you launch the game at least once before trying to view saves in Pathologic 2 Mod Loader.",

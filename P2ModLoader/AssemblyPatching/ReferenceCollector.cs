@@ -16,7 +16,7 @@ public static class ReferenceCollector {
 			try {
 				var f = !dllPath.Contains(fileName) ? file : fileCopy;
 				references.Add(MetadataReference.CreateFromFile(f));
-				Logger.LogInfo($"added {f}");
+				Logger.LogInfo($"Potential dependency for patching loaded: {f}");
 			} catch (Exception ex) {
 				Logger.LogWarning($"Could not load local assembly {Path.GetFileName(file)}: {ex.Message}");
 			}
