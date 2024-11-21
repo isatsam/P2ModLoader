@@ -2,13 +2,37 @@ namespace P2ModLoader.Saves;
 
 public static class SavesInfoParser {
 	private static readonly Dictionary<string, string> LocationName = new() {
-		["None"] = "Unknown",
-		["AndrewBar"] = "The Broken Heart Pub",
 		["Grief"] = "Bad Grief's Nest",
+		["None"] = "Unknown",
+		["Notkin"] = "The Soul-and-a-Half Fortress",
+		["Government"] = "Town Hall",
+		["Theater"] = "Theatre",
+		["Georgy"] = "The Crucible: Georgiy's Workshop",
+		["Maria"] = "The Crucible: Maria's Throne",
+		["Victor"] = "The Crucible: Victor's Abode",
+		["Eva"] = "The Stillwater",
+		["Julia"] = "The Trammel",
+		["Young_Vlad"] = "Vacant House",
+		["Kapella"] = "The Lump: Capella's Wing",
 		["Olgimski"] = "The Lump: Olgimsky's Seat",
-		["Bachelor_MN"] = "Bachelor's Place",
 		["Lara"] = "The Shelter",
+		["Mishka"] = "Murky's Corner",
+		["Saburov"] = "The Rod",
+		["Peter_Flat"] = "Stamatin's Loft",
+		["Laska"] = "Grace's Lodge",
+		["Ospina"] = "Aspity's Hospice",
+		["Rubin"] = "Rubin's Hideout",
 		["Rubin_Flat"] = "Rubin's Flat",
+		["Anna"] = "The Willows",
+		["Haruspex"] = "Haruspex's Lair",
+		["Isidor"] = "Isidor Burakh's House",
+		["Polyhedron"] = "Polyhedron",
+		["Cathedral"] = "Cathedral",
+		["Boiny"] = "Abattoir",
+		["Termitnik"] = "Termitary",
+		["AndrewBar"] = "The Broken Heart Pub",
+		["Ospina_MN"] = "Refugee's Corner",
+		["Bachelor_MN"] = "Bachelor's Place"
 	};
 
 	public static string? Parse(string save, bool isLast) {
