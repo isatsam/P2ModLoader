@@ -58,7 +58,7 @@ public class SettingsTab : BaseTab {
         _checkForUpdatesButton.Location = new Point(20, 125);
         _checkForUpdatesButton.Width = 190;
         _checkForUpdatesButton.Height = 32;
-        _checkForUpdatesButton.Click += (_, _) => _ = AutoUpdater.CheckForUpdatesAsync(); 
+        _checkForUpdatesButton.Click += (_, _) => _ = AutoUpdater.CheckForUpdatesAsync(showNoUpdatesDialog: true); 
         
         _checkForUpdatesCheckBox = new CheckBox();
         _checkForUpdatesCheckBox.Text = "Check for updates on startup";
