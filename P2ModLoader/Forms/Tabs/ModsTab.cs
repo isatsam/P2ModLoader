@@ -204,20 +204,42 @@ public class ModsTab : BaseTab {
         };
         descriptionContainer.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
         descriptionContainer.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-
+        
+        var buttonPanel = new FlowLayoutPanel {
+            Dock = DockStyle.Fill,
+            Height = 45,
+            FlowDirection = FlowDirection.LeftToRight
+        };
+        
         var refreshButton = new Button {
             Text = "Refresh Available Mods",
-            Dock = DockStyle.Left,
             Width = 220,
-            Height = 45,
-            Margin = new Padding(5)
+            Height = 35
         };
         refreshButton.Click += (_, _) => {
+            SettingsSaver.PauseSaving();
             var tempInstallPath = SettingsHolder.InstallPath;
+            var tempIsPatched = SettingsHolder.IsPatched;
             SettingsHolder.InstallPath = string.Empty;
             SettingsHolder.InstallPath = tempInstallPath;
+            SettingsHolder.IsPatched = tempIsPatched;
+            SettingsSaver.UnpauseSaving();
         };
-
+        
+        var enableAllButton = new Button {
+            Text = "Enable All",
+            Width = 150,
+            Height = 35
+        };
+        enableAllButton.Click += (_, _) => SetAllModsChecked(true);
+        
+        var disableAllButton = new Button {
+            Text = "Disable All",
+            Width = 150,
+            Height = 35
+        };
+        disableAllButton.Click += (_, _) => SetAllModsChecked(false);
+        
         _descriptionBox = new NoCaretTextBox {
             Dock = DockStyle.Fill,
             Multiline = true,
@@ -228,10 +250,35 @@ public class ModsTab : BaseTab {
             ScrollBars = ScrollBars.Vertical
         };
 
-        descriptionContainer.Controls.Add(refreshButton, 0, 0);
+        buttonPanel.Controls.Add(refreshButton);
+        buttonPanel.Controls.Add(disableAllButton);
+        buttonPanel.Controls.Add(enableAllButton);
+        descriptionContainer.Controls.Add(buttonPanel, 0, 0);
         descriptionContainer.Controls.Add(_descriptionBox, 0, 1);
 
         return descriptionContainer;
+    }
+
+    private void SetAllModsChecked(bool value) {
+        if (_modListView == null || _isRefreshing) return;
+
+        try {
+            _isRefreshing = true;
+            
+            foreach (ListViewItem item in _modListView.Items) {
+                if (item.Tag is not Mod mod) continue;
+                
+                item.Checked = value;
+                mod.IsEnabled = value;
+                RefreshItem(item);
+            }
+
+            SettingsHolder.UpdateModState(ModManager.Mods);
+            ModsChanged?.Invoke();
+        }
+        finally {
+            _isRefreshing = false;
+        }
     }
 
     private void InitializeButton_Click(object? sender, EventArgs e) {
