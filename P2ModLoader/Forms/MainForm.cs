@@ -68,7 +68,7 @@ public partial class MainForm : Form {
         buttonContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
         buttonContainer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
 
-        _patchButton = NewButton("Patch");
+        _patchButton = NewButton();
         _patchButton.Click += (_, _) => {
             GameLauncher.TryPatch(setIsPatchedEarly: true);
             UpdateControls();
@@ -119,10 +119,12 @@ public partial class MainForm : Form {
         var shouldDisableButtons = SettingsHolder.InstallPath == null ||
                                    (!SettingsHolder.AllowStartupWithConflicts && hasConflicts) ||
                                    ModManager.Mods.Count == 0;
-
+        var hasMods = ModManager.Mods.Any(m => m.IsEnabled);
+            
         _patchButton!.Enabled = !shouldDisableButtons && !SettingsHolder.IsPatched;
         _launchExeButton!.Enabled = !shouldDisableButtons;
         _launchSteamButton!.Enabled = !shouldDisableButtons;
+        _patchButton.Text = hasMods ? "Patch" : "Restore Default";
         _launchExeButton.Text = SettingsHolder.IsPatched ? "Launch.exe" : "Patch + Launch .exe";
         _launchSteamButton.Text = SettingsHolder.IsPatched ? "Launch in Steam" : "Patch + Launch in Steam";
         
@@ -130,12 +132,17 @@ public partial class MainForm : Form {
             _patchStatusLabel.Invoke(UpdateControls);
             return;
         }
-    
+
+        var unpatchedText = hasMods ? "Current mod list has not been applied yet. Patch to apply the changes."
+                : "There are still applied mods. Restore default to recover backups.";
+        var patchedText = hasMods ? "Current mod list has been applied to the game." :
+            "No mods have been applied to the game.";
+        
         _patchStatusLabel!.Text = 
             SettingsHolder.InstallPath == null ? "The install has not been found, patching unavailable." :
             hasConflicts ? "Resolve conflicts in the mod list before patching." :
-            !SettingsHolder.IsPatched ? "Current mod list has not been applied yet. Patch to apply the changes." :
-            "Current mod list has been applied to the game.";
+            !SettingsHolder.IsPatched ? unpatchedText : patchedText;
+            
         _patchStatusLabel.ForeColor = !SettingsHolder.IsPatched ? Color.Red : Color.Black;
     }
 }
