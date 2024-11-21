@@ -23,7 +23,7 @@ namespace P2ModLoader.Helper {
                 _progressForm.Show();
                 Application.DoEvents();
 
-                BackupManager.RecoverBackups();
+                if(!BackupManager.TryRecoverBackups()) return false;
 
                 var enabledMods = ModManager.Mods.Where(m => m.IsEnabled).ToList();
                 var currentMod = 0;
