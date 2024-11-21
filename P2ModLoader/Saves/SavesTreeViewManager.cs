@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using P2ModLoader.Data;
 using P2ModLoader.Forms;
 using P2ModLoader.Helper;
@@ -113,10 +114,10 @@ public class SavesTreeViewManager {
         if (_treeView.SelectedNode?.Tag is not NodeData { Type: NodeData.NodeType.Profile } nodeData)
             return;
     
-        var parts = nodeData.XElement?.Element("Name")?.Value.Split(" ");
+        var parts = nodeData.XElement?.Element("Name")!.Value.Split(" ");
         if (parts?.Length < 2) return; 
 
-        using var editDialog = new ProfileEditDialog(parts![0], parts[1]);
+        using var editDialog = new ProfileEditDialog(parts[0], parts[1]);
         if (editDialog.ShowDialog() != DialogResult.OK)
             return;
 
@@ -145,7 +146,7 @@ public class SavesTreeViewManager {
     private void DeleteNode(TreeNode node, NodeData data) {
         var message = data.Type switch {
             NodeData.NodeType.Profile => "Are you sure you want to delete this profile?",
-            NodeData.NodeType.Save => "Are you sure you want to delete this save?"
+            NodeData.NodeType.Save => "Are you sure you want to delete this save?",
         };
 
         if (MessageBox.Show(message, "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)

@@ -18,12 +18,9 @@ public static class SettingsHolder {
 	public static string? InstallPath {
 		get => _installPath;
 		set {
-			var newPath = value;
 			var isValid = newPath != null && File.Exists(Path.Combine(newPath, "Pathologic.exe"));
         
-			if (_installPath == newPath) return;
         
-			_installPath = isValid ? newPath : null;
 			InstallPathChanged?.Invoke();
 		}
 	}

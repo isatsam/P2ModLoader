@@ -26,9 +26,7 @@ public static class ReferenceCollector {
 	}
 
 	public static UsingList CollectAllUsings(SyntaxNode root) {
-		var allUsings = root.DescendantNodes()
-			.OfType<UsingDirectiveSyntax>()
-			.ToList();
+		var allUsings = root.DescendantNodes().OfType<UsingDirectiveSyntax>().ToList();
 
 		return SyntaxFactory.List(allUsings);
 	}

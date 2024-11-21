@@ -29,29 +29,26 @@ public static class AutoUpdater {
     private const string REPO = "P2ModLoader";
 
     public static readonly string CurrentVersion;
-    private static readonly string UpdateDirectory;
     private static readonly HttpClient Client;
-    private static readonly string BaseDirectory;
-    private static readonly JsonSerializerOptions JsonOptions;
+    private static readonly string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+    private static readonly string UpdateDirectory = Path.Combine(BaseDirectory, "Updates");
+
+    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
     static AutoUpdater() {
         var versionInfo = Assembly.GetExecutingAssembly().GetName().Version!;
         CurrentVersion = $"{versionInfo.Major}.{versionInfo.Minor}.{versionInfo.Build}";
-        BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        UpdateDirectory = Path.Combine(BaseDirectory, "Updates");
+
         Client = new HttpClient();
         Client.DefaultRequestHeaders.Add("User-Agent", "Auto-Updater");
-        JsonOptions = new JsonSerializerOptions {
-            PropertyNameCaseInsensitive = true
-        };
     }
     
-    public static async Task CheckForUpdatesAsync() {
+    public static async Task CheckForUpdatesAsync(bool showNoUpdatesDialog = false) {
         Logger.LogInfo("Initiating update check...");
         try {
             var releases = await GetAllReleasesAsync();
             if (releases == null || releases.Count == 0 || releases[0].Assets.Count == 0) {
-                Logger.LogWarning("No releases found.");
+                ErrorHandler.Handle("No available versions found. Check your internet connection.", null);
                 return;
             }
 
@@ -59,16 +56,18 @@ public static class AutoUpdater {
             var newVersion = latestRelease.TagName.TrimStart('v');
             Logger.LogInfo($"Latest version is: {newVersion}, current version is: {CurrentVersion}");
 
-            if (!IsNewer(newVersion)) return;
+            if (!IsNewer(newVersion)) {
+                if (showNoUpdatesDialog)
+                    MessageBox.Show("No new versions found.", "No updates", MessageBoxButtons.OK);
+                return;
+            }
 
-            var releaseNotes = GetCumulativeReleaseNotes(releases);
             var message = $"A new update is available ({newVersion}).\n" +
                           $"Changes from current version ({CurrentVersion}):\n\n" +
                           
-                          $"{releaseNotes}\n\n" +
+                          $"{GetCumulativeReleaseNotes(releases)}\n\n" +
                           
                           $"Do you want to update?";
-            
             var result = MessageBox.Show(message, "Update Available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
@@ -80,7 +79,7 @@ public static class AutoUpdater {
 
     private static async Task<List<GitHubRelease>?> GetAllReleasesAsync() {
         var response = await Client.GetStringAsync($"https://api.github.com/repos/{OWNER}/{REPO}/releases");
-        return JsonSerializer.Deserialize<List<GitHubRelease>>(response, JsonOptions) ?? new List<GitHubRelease>();
+        return JsonSerializer.Deserialize<List<GitHubRelease>>(response, JsonOptions) ?? [];
     }
 
     private static string GetCumulativeReleaseNotes(List<GitHubRelease> releases) {
