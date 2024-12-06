@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
@@ -10,10 +9,10 @@ public static class InstallationLocator {
 
     private const string STEAM_LINUX_PATH = @"\.local\share\Steam"; // example: /home/username/.local/share/Steam
     
-    private const string PATHOLOGIC_2_STEAM_APP_ID = "230410";
+    private const string PATHOLOGIC_2_STEAM_APP_ID = "505230";
     
     private const string STEAM_LIBRARY_FOLDERS_PATH = @"config\libraryfolders.vdf";
-    private const string PATHOLOGIC_STEAM_RELATIVE_PATH = @"steamapps\common\Warframe";
+    private const string PATHOLOGIC_STEAM_RELATIVE_PATH = @"steamapps\common\Pathologic";
 
     private const string APPDATA_PATH = @"AppData\LocalLow\Ice-Pick Lodge\Pathologic 2";
     
@@ -39,14 +38,6 @@ public static class InstallationLocator {
         return steamPath;
     }
 
-    public static string? FindGog()
-    {
-        // TODO
-        Logger.LogWarning("FindGog -- not implemented");
-        var gogPath = "";
-        return gogPath;
-    }
-
     public static string? FindInstall()
     {
         var steamPath = FindSteam();
@@ -64,20 +55,9 @@ public static class InstallationLocator {
             return FindSteamInstall(steamPath);
         }
 
-        var gogPath = FindGog();
-        if (!string.IsNullOrEmpty(gogPath))
-        {
-            Logger.LogInfo("Found GOG installation:   " + gogPath);
-            return FindGogInstall(gogPath);
-        }
-
+        // TODO: Handle GOG installs.
         return null;
         }
-
-    private static string? FindGogInstall(string gogPath)
-    {
-        return null;
-    }
 
     private static string? FindSteamInstall(string steamPath) {
         var libraryFoldersPath = Path.Combine(steamPath, STEAM_LIBRARY_FOLDERS_PATH);
@@ -138,6 +118,7 @@ public static class InstallationLocator {
     public static string? FindAppData() {
         var userPath = Environment.GetEnvironmentVariable("USERPROFILE");
         var appdataPath = Path.Combine(userPath!, APPDATA_PATH);
+        Logger.LogInfo("appdata\n" + userPath + "\n" + appdataPath);
         
         return Directory.Exists(appdataPath) ? appdataPath : null;
     }
