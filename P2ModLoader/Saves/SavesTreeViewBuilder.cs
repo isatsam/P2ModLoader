@@ -11,9 +11,7 @@ public class SavesTreeViewBuilder(string savesDirectory, ProfileManager profileM
         if (profileIndex == profileManager.CurrentProfileIndex)
             name = $"{name} (current)";
 
-        var profileNode = new TreeNode(name) {
-            Tag = new NodeData { Type = NodeData.NodeType.Profile, XElement = profile }
-        };
+        var profileNode = new TreeNode(name) { Tag = NodeData.NewProfile(profile) };
 
         AddDataItems(profileNode, profile);
         AddSaveFiles(profileNode, name, lastSave);
@@ -47,23 +45,12 @@ public class SavesTreeViewBuilder(string savesDirectory, ProfileManager profileM
             var dirName = Path.GetFileName(dir);
             var dateTime = SavesInfoParser.ParseDate(dirName);
             if (dateTime == null) continue;
-            saveInfos.Add(new SaveInfo {
-                DirectoryPath = dir,
-                DirectoryName = dirName,
-                DateTime = dateTime
-            });
+            saveInfos.Add(new SaveInfo { DirectoryPath = dir, DirectoryName = dirName, DateTime = dateTime });
         }
 
         foreach (var saveInfo in saveInfos.OrderByDescending(i => i.DateTime).ToList()) {
             var displayName = SavesInfoParser.Parse(saveInfo.DirectoryName, saveInfo.DirectoryName == lastSave);
-
-            var saveNode = new TreeNode(displayName) {
-                Tag = new NodeData {
-                    Type = NodeData.NodeType.Save,
-                    Path = saveInfo.DirectoryPath
-                }
-            };
-
+            var saveNode = new TreeNode(displayName) { Tag = NodeData.NewSave(saveInfo.DirectoryPath) };
             savesNode.Nodes.Add(saveNode);
         }
 

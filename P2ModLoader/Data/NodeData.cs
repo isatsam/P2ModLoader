@@ -12,4 +12,7 @@ public class NodeData {
 	public NodeType Type { get; init; }
 	public XElement? XElement { get; init; } 
 	public string? Path { get; init; } 
+	
+	public static NodeData NewSave(string path) => new() { Type = NodeType.Save, Path = path };
+	public static NodeData NewProfile(XElement element) => new() { Type = NodeType.Profile, XElement = element };
 }

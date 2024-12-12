@@ -34,7 +34,7 @@ public static class Logger {
     }
 
     private static void WriteToLogs(string content, bool timestamped = true) {
-        var logMessage = timestamped  ? $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {content}"  : content;
+        var logMessage = timestamped ? $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {content}" : content;
         Console.WriteLine(logMessage);
 
         try {
@@ -43,13 +43,11 @@ public static class Logger {
                 BufferedLogs.Add(logMessage);
 
                 var installLogPath = GetInstallLogPath();
-                if (installLogPath != null) {
-                    HandleInstallPathChange(installLogPath);
-                    File.AppendAllText(installLogPath, logMessage + Environment.NewLine);
-                }
+                if (installLogPath == null) return;
+                HandleInstallPathChange(installLogPath);
+                File.AppendAllText(installLogPath, logMessage + Environment.NewLine);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ErrorHandler.Handle($"Error writing to log file: {ex.Message}", ex, skipLogging: true);
         }
     }

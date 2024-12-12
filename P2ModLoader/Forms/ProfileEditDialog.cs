@@ -3,6 +3,7 @@ namespace P2ModLoader.Forms;
 public sealed class ProfileEditDialog : Form {
 	private readonly TextBox _numberTextBox;
 
+	private const byte BACKSPACE = 8;
 	public string? UniqueName { get; private set; }
 
 	public ProfileEditDialog(string prefix, string currentUniqueName) {
@@ -29,7 +30,7 @@ public sealed class ProfileEditDialog : Form {
 			Location = new Point(prefixLabel.Right + 10, 23) 
 		};
 		_numberTextBox.KeyPress += (_, e) => {
-			if (e.KeyChar == ' ' || (Path.GetInvalidFileNameChars().Contains(e.KeyChar) && (byte)e.KeyChar != 8))
+			if (e.KeyChar == ' ' || (Path.GetInvalidFileNameChars().Contains(e.KeyChar) && e.KeyChar != BACKSPACE))
 				e.Handled = true;
 		};
 		

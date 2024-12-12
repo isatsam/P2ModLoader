@@ -1,18 +1,19 @@
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.TypeSystem;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Emit;
-using P2ModLoader.AssemblyPatching;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
 using P2ModLoader.Helper;
 using LanguageVersion = Microsoft.CodeAnalysis.CSharp.LanguageVersion;
 using MethodBody = Mono.Cecil.Cil.MethodBody;
 
-public class AssemblyPatcher {
+namespace P2ModLoader.AssemblyPatching;
+
+public static class AssemblyPatcher {
     public static bool PatchAssembly(string dllPath, string updatedSourcePath, string outputPath = null) {
         outputPath ??= dllPath;
         try {
@@ -244,8 +245,7 @@ public class AssemblyPatcher {
         }
     }
 
-    private static ClassDeclarationSyntax FindClassDeclaration(SyntaxNode node, string className)
-    {
+    private static ClassDeclarationSyntax FindClassDeclaration(SyntaxNode node, string className) {
         foreach (var child in node.ChildNodes())
         {
             if (child is ClassDeclarationSyntax cls && cls.Identifier.Text == className)

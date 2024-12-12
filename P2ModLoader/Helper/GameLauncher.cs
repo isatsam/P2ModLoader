@@ -5,6 +5,7 @@ using AssetsTools.NET.Extra;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using P2ModLoader.AssemblyPatching;
 using P2ModLoader.ModList;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
