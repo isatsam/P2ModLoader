@@ -333,5 +333,8 @@ public class AssemblyPatcher {
             };
             originalMethod.Body.ExceptionHandlers.Add(newHandler);
         }
+        
+        originalMethod.CustomAttributes.Clear();
+        CloneCreator.CloneAttributes(newMethod, originalMethod, targetModule);
     }
 }

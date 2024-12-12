@@ -79,6 +79,8 @@ public static class CloneCreator {
             typeToClone.BaseType != null ? targetModule.ImportReference(typeToClone.BaseType) : null
         );
 
+        CloneAttributes(typeToClone, newType, targetModule);
+        
         foreach (var interfaceImpl in typeToClone.Interfaces) {
             newType.Interfaces.Add(
                 new InterfaceImplementation(targetModule.ImportReference(interfaceImpl.InterfaceType)));
@@ -152,6 +154,8 @@ public static class CloneCreator {
             methodToClone.Attributes,
             targetModule.ImportReference(methodToClone.ReturnType)
         );
+        
+        CloneAttributes(methodToClone, newMethod, targetModule);
 
         foreach (var gp in methodToClone.GenericParameters) {
             var newGp = new GenericParameter(gp.Name, newMethod);
@@ -209,5 +213,33 @@ public static class CloneCreator {
         }
 
         return newMethod;
+    }
+
+    public static void CloneAttributes(ICustomAttributeProvider source, ICustomAttributeProvider target,
+        ModuleDefinition targetModule) {
+        foreach (var attribute in source.CustomAttributes) {
+            var importedAttribute = new CustomAttribute(targetModule.ImportReference(attribute.Constructor));
+
+            foreach (var arg in attribute.ConstructorArguments) {
+                importedAttribute.ConstructorArguments.Add(new CustomAttributeArgument(
+                    targetModule.ImportReference(arg.Type), arg.Value));
+            }
+
+            foreach (var field in attribute.Fields) {
+                importedAttribute.Fields.Add(new CustomAttributeNamedArgument(
+                    field.Name,
+                    new CustomAttributeArgument(targetModule.ImportReference(field.Argument.Type),
+                        field.Argument.Value)));
+            }
+
+            foreach (var property in attribute.Properties) {
+                importedAttribute.Properties.Add(new CustomAttributeNamedArgument(
+                    property.Name,
+                    new CustomAttributeArgument(targetModule.ImportReference(property.Argument.Type),
+                        property.Argument.Value)));
+            }
+
+            target.CustomAttributes.Add(importedAttribute);
+        }
     }
 }
