@@ -17,7 +17,7 @@ namespace P2ModLoader.Helper {
         private const string EXE_PATH = "Pathologic.exe";
         private static ProgressForm? _progressForm;
 
-        public static bool TryPatch(bool setIsPatchedEarly = false) {
+        public static bool TryPatch() {
             using var form = _progressForm = new ProgressForm();
             try {
                 _progressForm.Show();
@@ -41,15 +41,13 @@ namespace P2ModLoader.Helper {
                     var success = UpdateAssemblies(modAssemblyPath, mod.Info.Name);
                     if (!success) return false;
                 }
-                Logger.LogInfo($"Finished loading {enabledMods.Count} mods.");
                 
-                if (setIsPatchedEarly)
-                    SettingsHolder.IsPatched = true;
+                Logger.LogInfo($"Finished loading {enabledMods.Count} mods.");
+                SettingsHolder.IsPatched = true;
                 
                 return true;
             } catch (Exception ex) {
-                MessageBox.Show($"Error during patching: {ex.Message}", "Error", MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                ErrorHandler.Handle("Error during patching", ex);
                 return false;
             }
         }
@@ -149,7 +147,6 @@ namespace P2ModLoader.Helper {
             }
 
             
-            SettingsHolder.IsPatched = true;
             return true;
         }
     }

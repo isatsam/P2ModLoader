@@ -70,7 +70,7 @@ public partial class MainForm : Form {
 
         _patchButton = NewButton();
         _patchButton.Click += (_, _) => {
-            GameLauncher.TryPatch(setIsPatchedEarly: true);
+            GameLauncher.TryPatch();
             UpdateControls();
         };
 
