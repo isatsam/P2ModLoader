@@ -212,8 +212,8 @@ public class ModsTab : BaseTab {
         };
 
         var refreshButton = new Button {
-            Text = "Refresh Available Mods",
-            Width = 220,
+            Text = "Refresh Mod List",
+            Width = 161,
             Height = 35
         };
         refreshButton.Click += (_, _) => {
@@ -228,7 +228,7 @@ public class ModsTab : BaseTab {
 
         var enableAllButton = new Button {
             Text = "Enable All",
-            Width = 150,
+            Width = 100,
             Height = 35
         };
         enableAllButton.Click += (_, _) => SetAllModsChecked(true);
@@ -412,18 +412,23 @@ public class ModsTab : BaseTab {
         if (focusedItem == null) return;
 
         var mod = focusedItem.Tag as Mod;
-        if (string.IsNullOrEmpty(mod!.Info.Url)) return;
-
         var contextMenu = new ContextMenuStrip();
-        var openUrlItem = new ToolStripMenuItem("Open URL");
-        openUrlItem.Click += (_, _) => {
-            Process.Start(new ProcessStartInfo {
-                FileName = mod.Info.Url,
-                UseShellExecute = true
-            });
-        };
 
-        contextMenu.Items.Add(openUrlItem);
+        if (!string.IsNullOrEmpty(mod!.Info.Url)) {
+            var openUrlItem = new ToolStripMenuItem("Open URL");
+            openUrlItem.Click += (_, _) => {
+                Process.Start(new ProcessStartInfo {
+                    FileName = mod.Info.Url,
+                    UseShellExecute = true
+                });
+            };
+            contextMenu.Items.Add(openUrlItem);
+        }
+
+        var openFolderItem = new ToolStripMenuItem("Open folder");
+        openFolderItem.Click += (_, _) => { Process.Start("explorer.exe", mod.FolderPath); };
+        contextMenu.Items.Add(openFolderItem);
+
         contextMenu.Show(_modListView, e.Location);
     }
 

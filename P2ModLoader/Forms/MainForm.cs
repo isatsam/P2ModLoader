@@ -13,7 +13,7 @@ public partial class MainForm : Form {
     private Label? _patchStatusLabel;
     
     public MainForm() {
-        InitializeComponent();
+        //InitializeComponent();
         InitializeTabs();
         this.Load += MainForm_Load!;
     }
