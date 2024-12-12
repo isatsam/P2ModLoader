@@ -30,9 +30,7 @@ public class ModsTab : BaseTab {
         SettingsHolder.InstallPathChanged += OnSettingChanged;
         SettingsHolder.StartupWithConflictsChanged += OnSettingChanged;
 
-        ModsChanged += () => {
-            SettingsHolder.IsPatched = false;
-        };
+        ModsChanged += () => { SettingsHolder.IsPatched = false; };
 
         SettingsHolder.InstallPathChanged += UpdateUIState;
         UpdateUIState();
@@ -54,8 +52,7 @@ public class ModsTab : BaseTab {
     private void OnModsLoaded() {
         if (_modListView!.InvokeRequired) {
             _modListView.Invoke(RefreshModList);
-        }
-        else {
+        } else {
             RefreshModList();
         }
     }
@@ -286,8 +283,7 @@ public class ModsTab : BaseTab {
 
             SettingsHolder.UpdateModState(ModManager.Mods);
             ModsChanged?.Invoke();
-        }
-        finally {
+        } finally {
             _isRefreshing = false;
         }
     }
@@ -363,8 +359,7 @@ public class ModsTab : BaseTab {
                 otherItem.BackColor = dependency2.HasErrors ? dependency2.DisplayColor : conflict2.BackgroundColor;
                 otherMod.DependencyError = dependency2.HasErrors ? dependency2.ErrorMessage : string.Empty;
             }
-        }
-        finally {
+        } finally {
             _isRefreshing = false;
         }
     }
@@ -380,8 +375,7 @@ public class ModsTab : BaseTab {
             _modListView.Items.Clear();
             _modListView.Items.AddRange(currentItems);
             _modListView.EndUpdate();
-        }
-        finally {
+        } finally {
             _isRefreshing = false;
         }
     }

@@ -83,9 +83,7 @@ public static class AutoUpdater {
     }
 
     private static string GetCumulativeReleaseNotes(List<GitHubRelease> releases) {
-        var relevantReleases = releases
-            .Where(r => IsNewer(r.TagName))
-            .OrderBy(r => Version.Parse(r.TagName));
+        var relevantReleases = releases.Where(r => IsNewer(r.TagName)).OrderBy(r => Version.Parse(r.TagName));
 
         var notes = new System.Text.StringBuilder();
         foreach (var release in relevantReleases) {
