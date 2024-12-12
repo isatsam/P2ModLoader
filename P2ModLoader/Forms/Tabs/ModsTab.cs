@@ -235,17 +235,20 @@ public class ModsTab : BaseTab {
 
         var disableAllButton = new Button {
             Text = "Disable All",
-            Width = 150,
+            Width = 110,
             Height = 35
         };
         disableAllButton.Click += (_, _) => SetAllModsChecked(false);
 
         var openModsFolderButton = new Button {
-            Text = "Open Mods folder",
+            Text = "To Mods folder",
             Width = 150,
             Height = 35
         };
-        openModsFolderButton.Click += (_, _) => OpenModsFolder();
+        openModsFolderButton.Click += (_, _) => {
+            var mods = Path.Join(SettingsHolder.InstallPath, "Mods");
+            Process.Start("explorer.exe", mods);
+        };
 
         _descriptionBox = new NoCaretTextBox {
             Dock = DockStyle.Fill,
@@ -287,12 +290,7 @@ public class ModsTab : BaseTab {
             _isRefreshing = false;
         }
     }
-
-    private void OpenModsFolder() {
-        var mods = Path.Join(SettingsHolder.InstallPath, "Mods");
-        Process.Start("explorer.exe", mods);
-    }
-
+    
     private void InitializeButton_Click(object? sender, EventArgs e) {
         var installPath = SettingsHolder.InstallPath;
         if (string.IsNullOrEmpty(installPath)) return;
