@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace P2ModLoader.Helper;
 
 using System;
@@ -24,7 +26,7 @@ public class GitHubAsset {
     public string BrowserDownloadUrl { get; set; } = string.Empty;
 }
 
-public static class AutoUpdater {
+public static partial class AutoUpdater {
     private const string OWNER = "SurDno";
     private const string REPO = "P2ModLoader";
 
@@ -89,7 +91,8 @@ public static class AutoUpdater {
         foreach (var release in relevantReleases) {
             var version = release.TagName.TrimStart('v');
             notes.AppendLine($"{version}:");
-            notes.AppendLine(release.Body.Trim());
+            var releaseBody = PatchnoteStartRegex().Replace(release.Body.Trim(), "- ");
+            notes.AppendLine(releaseBody);
             notes.AppendLine();
         }
 
@@ -161,4 +164,7 @@ public static class AutoUpdater {
         File.WriteAllText(scriptPath, script);
         return scriptPath;
     }
+
+    [GeneratedRegex(@"(?m)^\* ")]
+    private static partial Regex PatchnoteStartRegex();
 }
