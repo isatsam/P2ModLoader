@@ -4,3 +4,4 @@
 # Build outputs
 P2ModLoader/bin/
 P2ModLoader/obj/
+*.user
