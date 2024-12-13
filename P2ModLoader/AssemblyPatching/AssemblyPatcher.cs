@@ -278,7 +278,7 @@ public static class AssemblyPatcher {
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node) {
             if (methods.TryGetValue(node.Identifier.Text, out var replacementMethod)) {
                 return replacementMethod
-                    .WithModifiers(node.Modifiers)
+                    .WithModifiers(replacementMethod.Modifiers)
                     .WithAttributeLists(node.AttributeLists);
             }
             return node;
