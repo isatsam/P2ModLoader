@@ -288,7 +288,8 @@ public static class AssemblyPatcher {
     private static void ReplaceMethodBody(MethodDefinition originalMethod, MethodDefinition newMethod,
         ModuleDefinition targetModule) {
         originalMethod.Body = new MethodBody(originalMethod);
-
+        originalMethod.Attributes = newMethod.Attributes;
+        
         var variableMap = new Dictionary<VariableDefinition, VariableDefinition>();
         foreach (var variable in newMethod.Body.Variables) {
             var newVariable = new VariableDefinition(targetModule.ImportReference(variable.VariableType));
