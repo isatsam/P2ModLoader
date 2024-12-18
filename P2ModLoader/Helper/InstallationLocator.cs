@@ -7,8 +7,10 @@ public static class InstallationLocator {
     private const string STEAM_32_BIT_PATH = @"SOFTWARE\Valve\Steam";
     private const string STEAM_64_BIT_PATH = @"SOFTWARE\Wow6432Node\Valve\Steam";
 
-    private const string STEAM_LINUX_PATH = @"\.local\share\Steam"; // example: /home/username/.local/share/Steam
+    private const string STEAM_LINUX_PATH = @"\.local\share\Steam";
 
+    public static string STEAM_EXE = "steam.exe";
+    
     private const string PATHOLOGIC_2_STEAM_APP_ID = "505230";
 
     private const string STEAM_LIBRARY_FOLDERS_PATH = @"config\libraryfolders.vdf";
@@ -20,19 +22,13 @@ public static class InstallationLocator {
         var steamPath = GetSteamPathFromRegistry(STEAM_32_BIT_PATH);
         steamPath ??= GetSteamPathFromRegistry(STEAM_64_BIT_PATH);
 
-        return steamPath;
-    }
-
-    public static string? FindSteamLinux() {
-        if (!Path.Exists(@"Z:\home")) {
-            // Likely not using Wine (i.e. on Windows), or non-standard Wine setup
-            return null;
+        if (steamPath == null && Path.Exists(@"Z:\home")) {
+            // Looking for Linux + Wine setup
+            steamPath = Path.Join(@"Z:\home\", Environment.GetEnvironmentVariable("USERNAME"), STEAM_LINUX_PATH);
+            steamPath = Path.Exists(steamPath) ? steamPath : null;
+            STEAM_EXE = Path.Exists(steamPath) ? "steam.sh" : STEAM_EXE;
         }
-
-        var user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-        user = user[(user.LastIndexOf('\\') + 1)..]; // "DEVICENAME/username" -> "username"
-
-        var steamPath = Path.Join(@"Z:\home\", user, STEAM_LINUX_PATH);
+        
         return steamPath;
     }
 
@@ -42,13 +38,6 @@ public static class InstallationLocator {
             Logger.LogInfo("Found Steam installation:   " + steamPath);
             return FindSteamInstall(steamPath);
         };
-
-
-        steamPath = FindSteamLinux();
-        if (!string.IsNullOrEmpty(steamPath)) {
-            Logger.LogInfo("Found Steam installation:   " + steamPath);
-            return FindSteamInstall(steamPath);
-        }
 
         // TODO: Handle GOG installs.
         return null;
