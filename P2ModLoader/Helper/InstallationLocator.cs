@@ -8,14 +8,14 @@ public static class InstallationLocator {
     private const string STEAM_64_BIT_PATH = @"SOFTWARE\Wow6432Node\Valve\Steam";
 
     private const string STEAM_LINUX_PATH = @"\.local\share\Steam"; // example: /home/username/.local/share/Steam
-    
+
     private const string PATHOLOGIC_2_STEAM_APP_ID = "505230";
-    
+
     private const string STEAM_LIBRARY_FOLDERS_PATH = @"config\libraryfolders.vdf";
     private const string PATHOLOGIC_STEAM_RELATIVE_PATH = @"steamapps\common\Pathologic";
 
     private const string APPDATA_PATH = @"AppData\LocalLow\Ice-Pick Lodge\Pathologic 2";
-    
+
     public static string? FindSteam() {
         var steamPath = GetSteamPathFromRegistry(STEAM_32_BIT_PATH);
         steamPath ??= GetSteamPathFromRegistry(STEAM_64_BIT_PATH);
@@ -23,50 +23,43 @@ public static class InstallationLocator {
         return steamPath;
     }
 
-    public static string? FindSteamLinux()
-    {
-        if (!Path.Exists(@"Z:\home"))
-        {
+    public static string? FindSteamLinux() {
+        if (!Path.Exists(@"Z:\home")) {
             // Likely not using Wine (i.e. on Windows), or non-standard Wine setup
             return null;
         }
 
         var user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-        user = user[(user.LastIndexOf('\\')+1)..]; // "DEVICENAME/username" -> "username"
+        user = user[(user.LastIndexOf('\\') + 1)..]; // "DEVICENAME/username" -> "username"
 
         var steamPath = Path.Join(@"Z:\home\", user, STEAM_LINUX_PATH);
         return steamPath;
     }
 
-    public static string? FindInstall()
-    {
+    public static string? FindInstall() {
         var steamPath = FindSteam();
-        if  (!string.IsNullOrEmpty(steamPath))
-        {
+        if (!string.IsNullOrEmpty(steamPath)) {
             Logger.LogInfo("Found Steam installation:   " + steamPath);
             return FindSteamInstall(steamPath);
         };
 
 
         steamPath = FindSteamLinux();
-        if (!string.IsNullOrEmpty(steamPath))
-        {
+        if (!string.IsNullOrEmpty(steamPath)) {
             Logger.LogInfo("Found Steam installation:   " + steamPath);
             return FindSteamInstall(steamPath);
         }
 
         // TODO: Handle GOG installs.
         return null;
-        }
+    }
 
     private static string? FindSteamInstall(string steamPath) {
         var libraryFoldersPath = Path.Combine(steamPath, STEAM_LIBRARY_FOLDERS_PATH);
         Logger.LogInfo("libraryFoldersPath: " + libraryFoldersPath + " ; " + File.Exists(libraryFoldersPath));
-        if (!File.Exists(libraryFoldersPath))
-        {
+        if (!File.Exists(libraryFoldersPath)) {
             libraryFoldersPath = Path.Combine(steamPath, STEAM_LIBRARY_FOLDERS_PATH.ToLower());
-            if (!File.Exists(libraryFoldersPath))
-            {
+            if (!File.Exists(libraryFoldersPath)) {
                 return null;
             }
         }
@@ -95,8 +88,7 @@ public static class InstallationLocator {
             var line = t.Trim();
 
             var pathMatch = pathRegex.Match(line);
-            if (pathMatch.Success)
-            {
+            if (pathMatch.Success) {
                 currentPath = pathMatch.Groups[1].Value.Replace(@"\\", @"\");
             }
 
@@ -119,7 +111,7 @@ public static class InstallationLocator {
         var userPath = Environment.GetEnvironmentVariable("USERPROFILE");
         var appdataPath = Path.Combine(userPath!, APPDATA_PATH);
         Logger.LogInfo("appdata\n" + userPath + "\n" + appdataPath);
-        
+
         return Directory.Exists(appdataPath) ? appdataPath : null;
     }
 }
