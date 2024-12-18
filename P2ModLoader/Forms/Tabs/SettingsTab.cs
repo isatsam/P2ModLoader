@@ -82,7 +82,6 @@ public class SettingsTab : BaseTab {
 
     private void BrowseButton_Click(object? sender, EventArgs e) {
         using var folderDialog = new FolderBrowserDialog();
-        folderDialog.Description = "Select the location of Pathologic.exe file";
         if (folderDialog.ShowDialog() != DialogResult.OK) return;
         SettingsHolder.InstallPath = folderDialog.SelectedPath;
         _mainForm.UpdateControls();
